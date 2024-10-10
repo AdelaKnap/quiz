@@ -1,0 +1,14 @@
+C:\Users\adela\OneDrive\Skrivbord\quiz\bin\Debug\net8.0\quiz.exe
+C:\Users\adela\OneDrive\Skrivbord\quiz\bin\Debug\net8.0\quiz.deps.json
+C:\Users\adela\OneDrive\Skrivbord\quiz\bin\Debug\net8.0\quiz.runtimeconfig.json
+C:\Users\adela\OneDrive\Skrivbord\quiz\bin\Debug\net8.0\quiz.dll
+C:\Users\adela\OneDrive\Skrivbord\quiz\bin\Debug\net8.0\quiz.pdb
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.AssemblyInfoInputs.cache
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.AssemblyInfo.cs
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.csproj.CoreCompileInputs.cache
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.dll
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\refint\quiz.dll
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.pdb
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.genruntimeconfig.cache
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\ref\quiz.dll
