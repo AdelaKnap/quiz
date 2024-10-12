@@ -1,9 +1,11 @@
 // Klasser och metoder för att hantera quizet
 
+using System.Text;
 using System.Text.Json;
 
 namespace quiz
 {
+
     public class QuizManager
     {
         private string filePath = @"quiz.json";     // Filväg till json-fil där topplistan lagras
@@ -15,10 +17,13 @@ namespace quiz
         {
             if (File.Exists(filePath))                                          // Kontroll om json-fil finns
             {
-                string jsonString = File.ReadAllText(filePath);                 // Läs in all text
+                // Läs in text från filen med UTF-8-kodning
+                string jsonString = File.ReadAllText(filePath);
                 dogs = JsonSerializer.Deserialize<List<Dog>>(jsonString)!;      // Deserialiserar JSON till listan av dogs
             }
         }
+
+
 
         // Metod för att skapa ett nytt objekt av klasen Dog
         public Dog AddDog(string question, string breed)
@@ -53,6 +58,23 @@ namespace quiz
         {
             var jsonString = JsonSerializer.Serialize(dogs);
             File.WriteAllText(filePath, jsonString);
+        }
+
+        // Metod för att skriva ut alla frågor 
+        public void ShowQuiz()
+        {
+            if (dogs.Count == 0)
+            {
+                Console.WriteLine("Det finns inga frågor i quizet just nu.");
+            }
+            else
+            {
+                int i = 0;
+                foreach (Dog dog in GetDogs())
+                {
+                    Console.WriteLine($"[{i++}] {dog.Question} - {dog.Breed}");
+                }
+            }
         }
 
     }

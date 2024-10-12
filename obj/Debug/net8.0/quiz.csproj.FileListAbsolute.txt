@@ -12,3 +12,4 @@ C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\refint\quiz.dll
 C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.pdb
 C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.genruntimeconfig.cache
 C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\ref\quiz.dll
+C:\Users\adela\OneDrive\Skrivbord\quiz\obj\Debug\net8.0\quiz.sourcelink.json

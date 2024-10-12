@@ -1,5 +1,3 @@
-﻿/* DT071G Projektarbete. En konsolapplikation med ett quiz med hundfrågor. Av Adela Knap */
-
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
 
 namespace quiz
@@ -8,8 +6,176 @@ namespace quiz
     {
         static void Main(string[] args)
         {
-            WriteLine("Hello World!");
-        }
+            // För att det ska fungera med å, ä, ö
+            OutputEncoding = System.Text.Encoding.Unicode;
+            InputEncoding = System.Text.Encoding.Unicode;
 
+            // Skapa nytt objekt av QuizManager
+            QuizManager quizManager = new();
+
+            // While-loop för att fortsätta köra applikationen tills den avslutas
+            while (true)
+            {
+                Clear();  // Rensa konsolen
+
+                // Visa huvudmeny
+                WriteLine("H U N D - Q U I Z !\n");
+                WriteLine("Välj vad du vill göra:");
+                WriteLine("1. Spela quiz");
+                WriteLine("2. Visa topplista");
+                WriteLine("3. Hantera frågorna i quizet");
+                WriteLine("X. Avsluta spelet\n");
+
+                // Användarens val med ReadKey
+                ConsoleKeyInfo keyInfo = ReadKey(true);
+                char choice = keyInfo.KeyChar;
+
+                // Switch-sats för de olika valen
+                switch (char.ToLower(choice))
+                {
+                    case '1':
+                        Clear();
+                        WriteLine("Spelet startar nu!");
+                        // Metod för att starta spelet
+                        WriteLine("Tryck på valfri tangent för att återgå till menyn...");
+                        ReadKey();
+                        break;
+
+                    case '2':
+                        Clear();
+                        WriteLine("Topplistan!");
+                        // Metod för att skriva ut topplistan
+                        WriteLine("Tryck på valfri tangent för att återgå till menyn...");
+                        ReadKey();
+                        break;
+
+
+
+                    // Undermeny för att hantera frågorna (visa, lägga till/ta bort)
+                    case '3':
+                        Clear();
+
+                        while (true)
+                        {
+                            Clear();  // Rensa konsolen
+
+                            WriteLine("Välj vad du vill göra:\n");
+                            WriteLine("1. Lägg till fråga");
+                            WriteLine("2. Ta bort fråga");
+                            WriteLine("3. Visa alla frågor");
+                            WriteLine("x. Återgå till huvudmenyn");
+
+                            // Användarens val för undermenyn
+                            keyInfo = ReadKey(true);
+                            char subChoice = keyInfo.KeyChar;
+
+                            // Switch-sats för undermenyn
+                            switch (char.ToLower(subChoice))
+                            {
+                                case '1':
+                                    Clear();
+
+                                    string? inputQuestion;
+                                    string? inputBreed;
+
+                                    Write("Skriv in en ny fråga: ");
+
+                                    // Kör så länge inte användaren anger en "riktig" fråga och inte null/whitespace
+                                    while (string.IsNullOrWhiteSpace(inputQuestion = ReadLine()))
+                                    {
+                                        Clear();
+                                        WriteLine("Du måste skriva in en fråga, försök igen!");
+                                        Write("Skriv in en fråga: ");
+                                    }
+
+                                    Write("Skriv in rätt ras på frågan: ");
+
+                                    // Kör så länge inte användaren anger ett "riktigt" svar
+                                    while (string.IsNullOrWhiteSpace(inputBreed = ReadLine()))
+                                    {
+                                        Clear();
+                                        WriteLine("Du måste ange ett svar, försök igen!");
+                                        Write("Skriv in rätt ras på frågan: ");
+                                    }
+
+                                    // Kör metoden AddDog och spara om allt stämmer
+                                    quizManager.AddDog(inputQuestion, inputBreed);
+
+                                    WriteLine("Frågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
+                                    ReadKey();
+                                    break;
+
+                                case '2':
+                                    Clear();
+                                    // Skriv ut alla frågor som finns
+                                    quizManager.ShowQuiz();
+
+                                    // Kontroll om det finns några frågor i quizet
+                                    if (quizManager.GetDogs().Count == 0)
+                                    {
+                                        WriteLine("Inga frågor finns i quizet. Tryck på valfri tangent för att återgå till undermenyn...");
+                                        ReadKey();
+                                        break;
+                                    }
+
+                                    // Fortsätt tills giltigt index anges
+                                    while (true)
+                                    {
+                                        Write("\nAnge index på frågan som ska tas bort:");
+
+                                        // Konvertera till int samt kontrollera att index är rätt
+                                        if (int.TryParse(ReadLine(), out int index) && index >= 0 && index < quizManager.GetDogs().Count)
+                                        {
+                                            try
+                                            {
+                                                quizManager.DeleteDog(index);   // Radera fråga
+                                                WriteLine("Frågan har tagits bort! Tryck på valfri tangent för att återgå till undermenyn.");
+                                                ReadKey();
+                                                break;
+                                            }
+                                            catch (Exception)
+                                            {
+                                                WriteLine("Det blev något fel. Tryck på valfri tangent för att fortsätta.");
+                                                ReadKey();
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            WriteLine("Felaktigt index, testa igen!");
+                                        }
+                                    }
+                                    break;
+
+                                case '3':
+                                    Clear();
+                                    // Skriv ut alla frågor som finns
+                                    quizManager.ShowQuiz();
+                                    WriteLine("\nTryck på valfri tangent för att återgåt till undermenyn.");
+                                    ReadKey();
+                                    break;
+
+                                default:
+                                    WriteLine("Ogiltigt val. Försök igen...");
+                                    break;
+                            }
+
+                            // Återgå till huvudmenyn
+                            if (char.ToLower(subChoice) == 'x') break;
+                        }
+
+                        break;
+
+                    case 'x':
+                        Clear();
+                        Environment.Exit(0);  // Avsluta programmet
+                        break;
+
+                    default:
+                        WriteLine("Ogiltigt val. Försök igen...");
+                        break;
+                }
+            }
+        }
     }
 }
