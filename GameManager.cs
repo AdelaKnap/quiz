@@ -20,9 +20,9 @@ namespace quiz
         }
 
         // Metod för att skapa ett nytt objekt av klassen TopList
-        public TopList AddTopList(string name, int points)
+        public TopList AddTopList(string name, int points, int maxPoints)
         {
-            TopList obj = new TopList(name, points);     // Användning av konstruktorn
+            TopList obj = new TopList(name, points, maxPoints);     // Användning av konstruktorn
             topList.Add(obj);
             SaveToFile();
             return obj;
@@ -46,7 +46,7 @@ namespace quiz
         {
             if (topList.Count == 0)
             {
-                Console.WriteLine("Det finns inga resultat i topplistan just nu.");
+                WriteLine("Det finns inga resultat i topplistan just nu.");
             }
             else
             {
@@ -54,7 +54,7 @@ namespace quiz
                 var sortedTopList = topList.OrderByDescending(t => t.Points);
                 foreach (TopList score in sortedTopList)
                 {
-                    Console.WriteLine($"{score.PlayerName} - {score.Points}");
+                    WriteLine($"{score.PlayerName} - {score.Points} rätt av {score.MaxPoints}.");
                 }
             }
         }
@@ -63,43 +63,86 @@ namespace quiz
         public void PlayQuiz(List<Dog> questions)
         {
             Clear();
-            string? name = string.Empty; // Sätt namn till en tom stärng först
+            string? name = string.Empty;            // Namn till en tom sträng först
 
-            while (string.IsNullOrEmpty(name))  // Kontroll om namnet är korrekt angivet
+            while (string.IsNullOrEmpty(name))     // Kontroll om namnet är korrekt angivet
             {
-                WriteLine("Skriv in ditt namn: ");
+                Write("Skriv in ditt namn: ");
                 name = ReadLine();
             }
 
-            int score = 0;  // För att räkna poäng
+            Clear();
+            WriteLine($"Hej {name} och välkommen till hundquizet!\n");
+            WriteLine("Tryck 'Esc' om du vill avbryta spelet.\n");
+            WriteLine("Tryck på valfri tangent för att böra quiza!");
+            ReadKey();
+
+
+            int score = 0;                        // För att räkna poäng
+            int questionNumber = 1;               // Numrera frågorna
+            bool quizCancelled = false;           // Boolean för att hålla koll på om spelaren vill avbryta quizet
 
             // Loopa genom alla frågor
             foreach (var question in questions)
             {
-                WriteLine(question.Question);   // Skriv ut frågan
-                WriteLine("Skriv vilken ras du tror att det är: ");
+                Clear();
+                WriteLine($"Fråga {questionNumber} av {questions.Count}");              // Skriv ut vilken fråga det är
+                WriteLine(question.Question);                                           // Skriv ut frågan
+                Write("\nSvar: ");
 
+                // Kontrollera om Esc trycktes för att svalsuta spelet utan att spara
+                var keyInfo = ReadKey(intercept: true);
+
+                if (keyInfo.Key == ConsoleKey.Escape)
+                {
+                    quizCancelled = true;
+                    break;
+                }
+
+                // Det inskrivna svaret
                 string? answer = ReadLine();
 
-                // Kontrollera av svar med String.Equals med en jämförelse oavsett stora/små bokstäver
+                // Kontrollera svaret med String.Equals, oavsett stora/små bokstäver
                 if (string.Equals(answer, question.Breed, StringComparison.OrdinalIgnoreCase))
                 {
-                    WriteLine("Rätt svar!");
-                    score++;       // Lägg till poäng
+                    WriteLine("\nRätt svar!");
+                    score++;                        // Lägg till poäng
                 }
                 else
                 {
-                    WriteLine($"Tyärr är det fel svar. Rätt svar är: {question.Breed}.");
+                    WriteLine($"\nTyvärr är det fel svar. Rätt svar är: {question.Breed}.");
                 }
 
                 WriteLine("Tryck på valfri tangent för att fortsätta...");
                 ReadKey();
+
+                questionNumber++;  // Öka frågenumret efter varje fråga
             }
 
-            WriteLine($"Quizet är slut! Du fick: {score} poäng av totalt {questions.Count} möjliga.");
+            Clear();
 
-            // Lägger till namn och poäng på topplistan
-            AddTopList(name, score);
+            // Om quizet avbryts
+            if (quizCancelled)
+            {
+                WriteLine("Quizet avbröts, ditt resultat sparas inte. Tryck på valfri tangent för att återgå till menyn.");
+                ReadKey();
+            }
+            else
+            {
+                WriteLine($"Quizet är slut! Du fick {score} poäng av totalt {questions.Count} möjliga.\n");
+                WriteLine("Tryck på valfri tangent för att återgå till meny.");
+                ReadKey();
+
+                // Lägger till namn och poäng på topplistan
+                AddTopList(name, score, questions.Count);
+            }
+        }
+
+        // Metod för att rensa hela topplistan och spara om
+        public void DeleteTopList()
+        {
+            topList.Clear();        // Radera listan
+            SaveToFile();           // Spara raderingen    
         }
 
     }

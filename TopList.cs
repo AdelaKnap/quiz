@@ -1,4 +1,4 @@
-// Klass för topplistan med namn och poäng
+// Klass för topplistan med namn, poäng och max antalet rätt/poäng
 
 namespace quiz
 {
@@ -7,11 +7,14 @@ namespace quiz
         public string PlayerName { get; set; }
         public int Points { get; set; }
 
+        public int MaxPoints { get; set; }
+
         // Konstruktor
-        public TopList(string playerName, int points)
+        public TopList(string playerName, int points, int maxPoints)
         {
             PlayerName = playerName;
             Points = points;
+            MaxPoints = maxPoints;
         }
     }
 }

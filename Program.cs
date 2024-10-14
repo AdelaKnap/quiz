@@ -31,7 +31,7 @@ namespace quiz
                 WriteLine("Välj vad du vill göra:");
                 WriteLine("1. Spela quiz");
                 WriteLine("2. Visa topplista");
-                WriteLine("3. Hantera frågorna i quizet");
+                WriteLine("3. Hantera quizet och topplistan");
                 WriteLine("X. Avsluta spelet");
 
                 // Användarens val med ReadKey
@@ -72,6 +72,8 @@ namespace quiz
                             WriteLine("1. Lägg till fråga");
                             WriteLine("2. Ta bort fråga");
                             WriteLine("3. Visa alla frågor");
+                            WriteLine("4. Radera topplistan");
+                            WriteLine("5. Visa topplistan\n");
                             WriteLine("X. Återgå till huvudmenyn");
 
                             // Användarens val för undermenyn
@@ -165,6 +167,20 @@ namespace quiz
                                     ReadKey();
                                     break;
 
+                                case '4':
+                                    Clear();
+                                    gameManager.DeleteTopList();
+                                    WriteLine("Topplistan är raderad. Tryck på valfri tangent för att återgå till undermenyn.");
+                                    ReadKey();
+                                    break;
+
+                                case '5':
+                                    Clear();
+                                    gameManager.ShowTopList();
+                                    WriteLine("\nTryck på valfri tangent för att återgå till undermenyn.");
+                                    ReadKey();
+                                    break;
+
                                 case 'x':
                                     Clear();
                                     toMainMenu = true;   // Återgå till huvudmenyn, stoppa loop
@@ -195,11 +211,24 @@ namespace quiz
 
 /*
 Att göra: 
-Lägg till så att frågorna visas numrerade.
-Kolla varför inte resultatet visas på slutet av quizet.
-Lägg till möjlighet att avbryta quizet om man vill.
+
+Fixa så att det inte går att skriva null/whitespace som svar
+Lägg till index (från 1) på topplistan. 
+Lägg till möjlighet att ta bort topplistan?
 Fixa att visaren inte syns förräns man ska skriva in något
-Fixa clear så att bara en fråga i taget syns i konsolen
-Fixa att en poängsammanställning visas i slutet av quizet
-Fixa hur topplistan skrivs ut med poäng och tidtagning
+Fixa tidtagning
+
+
+[0] Vilken hundras är känd för att vara en bra ledarhund för blinda? - Labrador
+[1] Vilken hundras är den minsta i världen? - Chihuahua
+[2] Vilken hundras har sitt ursprung i Sibirien och är känd för sin uthållighet i slädhundstävlingar? - Siberian husky
+[3] Vilken hundras är känd för sin blå-svarta tunga? - Chow chow
+[4] Vilken hundras är känd för sitt utseende med veckad hud och rynkor? - Shar pei
+[5] Vilken hundras användes ursprungligen för att jaga uttrar och är känd för sitt vattenavstötande päls? - Irländsk vattenspaniel
+[6] Vilken hundras är känd för sin snabba hastighet och användes traditionellt för jakt på harar? - Greyhound
+[7] Vilken liten terrier är känd för sin modiga personlighet och har sitt ursprung i Skottland? - Skotsk terrier
+[8] Vilken hundras, med sitt ursprung i Kina, är känd för sin "lejonlika" päls och sitt platta ansikte? - Pekinges
+[9] Vilken hundras är känd för sin snabbhet och intelligens och används ofta i agility-tävlingar? - Border collie
+[10] Vilken hundras, som är en av världens äldsta, har en lockig, ulliknande päls och sitt ursprung i Ungern? - Puli
+
 */
