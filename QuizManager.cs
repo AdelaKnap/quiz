@@ -1,6 +1,5 @@
 // Klasser och metoder för att hantera quizet
 
-using System.Text;
 using System.Text.Json;
 
 namespace quiz
@@ -23,16 +22,10 @@ namespace quiz
             }
         }
 
-
-
         // Metod för att skapa ett nytt objekt av klasen Dog
         public Dog AddDog(string question, string breed)
         {
-            Dog obj = new()
-            {
-                Question = question,
-                Breed = breed
-            };
+            Dog obj = new Dog(question, breed);
 
             dogs.Add(obj);          // Lägg till i listan dogs
             SaveToJsonFile();       // Spara till json-filen
@@ -77,7 +70,7 @@ namespace quiz
             }
         }
 
-          // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
+        // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
         public static void ErrorMessage()
         {
             Console.WriteLine("\nFelaktigt val, tryck på valfri tangent för att testa igen!");

@@ -6,6 +6,13 @@ namespace quiz
     {
         public string? Question { get; set; }
         public string? Breed { get; set; }
+
+        // Konstruktor
+        public Dog(string question, string breed)
+        {
+            Question = question;
+            Breed = breed;
+        }
     }
 }
 

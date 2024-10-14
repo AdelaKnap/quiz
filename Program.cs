@@ -17,6 +17,9 @@ namespace quiz
             // Skapa nytt objekt av QuizManager
             QuizManager quizManager = new();
 
+            // Skapa nytt objekt av GameManager
+            GameManager gameManager = new();
+
             // While-loop för att fortsätta köra applikationen tills den avslutas
             while (true)
             {
@@ -40,17 +43,14 @@ namespace quiz
                 {
                     case '1':
                         Clear();
-                        WriteLine("Spelet startar nu!");
-                        // Metod för att starta spelet
-                        WriteLine("Tryck på valfri tangent för att återgå till menyn...");
-                        ReadKey();
+                        var questions = quizManager.GetDogs();      // Hämta frågorna från quizManager
+                        gameManager.PlayQuiz(questions);            // Spela quizet med frågorna
                         break;
 
                     case '2':
                         Clear();
-                        WriteLine("Topplistan!");
-                        // Metod för att skriva ut topplistan
-                        WriteLine("Tryck på valfri tangent för att återgå till menyn...");
+                        gameManager.ShowTopList();
+                        WriteLine("\nTryck på valfri tangent för att återgå till menyn.");
                         ReadKey();
                         break;
 
@@ -66,7 +66,7 @@ namespace quiz
                         while (!toMainMenu)
                         {
                             Clear();  // Rensa konsolen
-                            
+
                             CursorVisible = false;  // Dölj markör
                             WriteLine("Välj vad du vill göra:\n");
                             WriteLine("1. Lägg till fråga");
@@ -195,8 +195,11 @@ namespace quiz
 
 /*
 Att göra: 
+Lägg till så att frågorna visas numrerade.
+Kolla varför inte resultatet visas på slutet av quizet.
+Lägg till möjlighet att avbryta quizet om man vill.
 Fixa att visaren inte syns förräns man ska skriva in något
-Skapa fil/klass för att hanter spelet
-Skapa fil/klass för att hantera topplista
-
+Fixa clear så att bara en fråga i taget syns i konsolen
+Fixa att en poängsammanställning visas i slutet av quizet
+Fixa hur topplistan skrivs ut med poäng och tidtagning
 */
