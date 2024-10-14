@@ -77,5 +77,12 @@ namespace quiz
             }
         }
 
+          // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
+        public static void ErrorMessage()
+        {
+            Console.WriteLine("\nFelaktigt val, tryck på valfri tangent för att testa igen!");
+            Console.ReadKey();
+        }
+
     }
 }

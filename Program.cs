@@ -1,3 +1,7 @@
+/*
+
+*/
+
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
 
 namespace quiz
@@ -18,13 +22,14 @@ namespace quiz
             {
                 Clear();  // Rensa konsolen
 
+                CursorVisible = false;  // Dölj markör
                 // Visa huvudmeny
-                WriteLine("H U N D - Q U I Z !\n");
+                WriteLine("H U N D - Q U I Z \n");
                 WriteLine("Välj vad du vill göra:");
                 WriteLine("1. Spela quiz");
                 WriteLine("2. Visa topplista");
                 WriteLine("3. Hantera frågorna i quizet");
-                WriteLine("X. Avsluta spelet\n");
+                WriteLine("X. Avsluta spelet");
 
                 // Användarens val med ReadKey
                 ConsoleKeyInfo keyInfo = ReadKey(true);
@@ -55,15 +60,19 @@ namespace quiz
                     case '3':
                         Clear();
 
-                        while (true)
+                        // Boolean för att hålla koll på när loopen för undermenyn ska brytas/återgå till huvudmeny
+                        bool toMainMenu = false;
+
+                        while (!toMainMenu)
                         {
                             Clear();  // Rensa konsolen
-
+                            
+                            CursorVisible = false;  // Dölj markör
                             WriteLine("Välj vad du vill göra:\n");
                             WriteLine("1. Lägg till fråga");
                             WriteLine("2. Ta bort fråga");
                             WriteLine("3. Visa alla frågor");
-                            WriteLine("x. Återgå till huvudmenyn");
+                            WriteLine("X. Återgå till huvudmenyn");
 
                             // Användarens val för undermenyn
                             keyInfo = ReadKey(true);
@@ -78,6 +87,7 @@ namespace quiz
                                     string? inputQuestion;
                                     string? inputBreed;
 
+                                    CursorVisible = true;  // Visa markör
                                     Write("Skriv in en ny fråga: ");
 
                                     // Kör så länge inte användaren anger en "riktig" fråga och inte null/whitespace
@@ -101,7 +111,7 @@ namespace quiz
                                     // Kör metoden AddDog och spara om allt stämmer
                                     quizManager.AddDog(inputQuestion, inputBreed);
 
-                                    WriteLine("Frågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
+                                    WriteLine("\nFrågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
                                     ReadKey();
                                     break;
 
@@ -121,7 +131,7 @@ namespace quiz
                                     // Fortsätt tills giltigt index anges
                                     while (true)
                                     {
-                                        Write("\nAnge index på frågan som ska tas bort:");
+                                        Write("\nAnge index på frågan som ska tas bort: ");
 
                                         // Konvertera till int samt kontrollera att index är rätt
                                         if (int.TryParse(ReadLine(), out int index) && index >= 0 && index < quizManager.GetDogs().Count)
@@ -142,7 +152,7 @@ namespace quiz
                                         }
                                         else
                                         {
-                                            WriteLine("Felaktigt index, testa igen!");
+                                            QuizManager.ErrorMessage();
                                         }
                                     }
                                     break;
@@ -155,13 +165,15 @@ namespace quiz
                                     ReadKey();
                                     break;
 
+                                case 'x':
+                                    Clear();
+                                    toMainMenu = true;   // Återgå till huvudmenyn, stoppa loop
+                                    break;
+
                                 default:
-                                    WriteLine("Ogiltigt val. Försök igen...");
+                                    QuizManager.ErrorMessage();
                                     break;
                             }
-
-                            // Återgå till huvudmenyn
-                            if (char.ToLower(subChoice) == 'x') break;
                         }
 
                         break;
@@ -172,10 +184,19 @@ namespace quiz
                         break;
 
                     default:
-                        WriteLine("Ogiltigt val. Försök igen...");
+                        QuizManager.ErrorMessage();
                         break;
                 }
             }
         }
     }
 }
+
+
+/*
+Att göra: 
+Fixa att visaren inte syns förräns man ska skriva in något
+Skapa fil/klass för att hanter spelet
+Skapa fil/klass för att hantera topplista
+
+*/
