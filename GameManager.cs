@@ -50,31 +50,63 @@ namespace quiz
             }
             else
             {
+                WriteLine("T O P P L I S T A N\n");
+
+                int i = 1;
                 // Sortera topplistan efter poäng i fallande ordning
                 var sortedTopList = topList.OrderByDescending(t => t.Points);
                 foreach (TopList score in sortedTopList)
                 {
-                    WriteLine($"{score.PlayerName} - {score.Points} rätt av {score.MaxPoints}.");
+                    WriteLine($"{i++}. {score.PlayerName} - {score.Points} rätt av {score.MaxPoints}");
                 }
             }
+        }
+
+        // Metod för att rensa hela topplistan
+        public void DeleteTopList()
+        {
+            WriteLine("Är du säker på att du vill radera hela topplistan? y / n ");
+
+            var keyInfo = ReadKey(intercept: true);  // Läs in tangent utan att visa den
+
+            if (keyInfo.Key == ConsoleKey.Y)         // Om 'Y' trycks
+            {
+                topList.Clear();                     // Radera listan
+                SaveToFile();                        // Spara raderingen
+                WriteLine("\nTopplistan har raderats.");
+            }
+            else if (keyInfo.Key == ConsoleKey.N)    // Om 'N' trycks
+            {
+                WriteLine("\nInga ändringar gjordes.");
+            }
+            else
+            {
+                WriteLine("\nOgiltigt val.");
+            }
+
+            // Återgå till menyn
+            WriteLine("Tryck på valfri tangent för att återgå till menyn.");
+            ReadKey();
         }
 
         // Metod för att spela quizet med listan Dog som parameter
         public void PlayQuiz(List<Dog> questions)
         {
-            Clear();
-            string? name = string.Empty;            // Namn till en tom sträng först
+            string? name;
 
-            while (string.IsNullOrEmpty(name))     // Kontroll om namnet är korrekt angivet
+            Write("Skriv in ditt namn: ");
+
+            while (string.IsNullOrWhiteSpace(name = ReadLine()))        // Kontroll om null/whitespace
             {
+                Clear();
+                WriteLine("Du måste skriva in ett giltigt namn!");
                 Write("Skriv in ditt namn: ");
-                name = ReadLine();
             }
 
             Clear();
             WriteLine($"Hej {name} och välkommen till hundquizet!\n");
-            WriteLine("Tryck 'Esc' om du vill avbryta spelet.\n");
             WriteLine("Tryck på valfri tangent för att böra quiza!");
+            WriteLine("(Tryck 'Esc' om du vill avbryta spelet under quizets gång.)");
             ReadKey();
 
 
@@ -98,9 +130,15 @@ namespace quiz
                     quizCancelled = true;
                     break;
                 }
-
                 // Det inskrivna svaret
                 string? answer = ReadLine();
+
+                while (string.IsNullOrWhiteSpace(answer))     // Kontroll null/whitespace
+                {
+                    WriteLine("\nDu måste skriva in ett giltigt svar!");
+                    Write("Svar: ");
+                    answer = ReadLine();
+                }
 
                 // Kontrollera svaret med String.Equals, oavsett stora/små bokstäver
                 if (string.Equals(answer, question.Breed, StringComparison.OrdinalIgnoreCase))
@@ -136,13 +174,6 @@ namespace quiz
                 // Lägger till namn och poäng på topplistan
                 AddTopList(name, score, questions.Count);
             }
-        }
-
-        // Metod för att rensa hela topplistan och spara om
-        public void DeleteTopList()
-        {
-            topList.Clear();        // Radera listan
-            SaveToFile();           // Spara raderingen    
         }
 
     }

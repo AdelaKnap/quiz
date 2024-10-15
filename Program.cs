@@ -54,9 +54,7 @@ namespace quiz
                         ReadKey();
                         break;
 
-
-
-                    // Undermeny för att hantera frågorna (visa, lägga till/ta bort)
+                    // Undermeny för att hantera quizet
                     case '3':
                         Clear();
 
@@ -170,8 +168,6 @@ namespace quiz
                                 case '4':
                                     Clear();
                                     gameManager.DeleteTopList();
-                                    WriteLine("Topplistan är raderad. Tryck på valfri tangent för att återgå till undermenyn.");
-                                    ReadKey();
                                     break;
 
                                 case '5':
@@ -211,12 +207,9 @@ namespace quiz
 
 /*
 Att göra: 
-
-Fixa så att det inte går att skriva null/whitespace som svar
-Lägg till index (från 1) på topplistan. 
-Lägg till möjlighet att ta bort topplistan?
+Lös probelmet med svaren och esc..
 Fixa att visaren inte syns förräns man ska skriva in något
-Fixa tidtagning
+Fixa tidtagning?
 
 
 [0] Vilken hundras är känd för att vara en bra ledarhund för blinda? - Labrador
