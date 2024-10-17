@@ -1,5 +1,6 @@
 // Klasser och metoder för att hantera quizet
 
+using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
 using System.Text.Json;
 
 namespace quiz
@@ -8,74 +9,89 @@ namespace quiz
     public class QuizManager
     {
         private string filePath = @"quiz.json";     // Filväg till json-fil där topplistan lagras
-        private List<Dog> dogs = new();             // Lista för frågor/svar 
+        private List<Quiz> quizItems = new();             // Lista för frågor/svar 
 
 
         // Konstruktor
         public QuizManager()
         {
-            if (File.Exists(filePath))                                          // Kontroll om json-fil finns
+            if (File.Exists(filePath))              // Kontroll om json-fil finns
             {
-                // Läs in text från filen med UTF-8-kodning
-                string jsonString = File.ReadAllText(filePath);
-                dogs = JsonSerializer.Deserialize<List<Dog>>(jsonString)!;      // Deserialiserar JSON till listan av dogs
+                try
+                {
+                    string jsonString = File.ReadAllText(filePath);                       // Läs in text från filen
+                    quizItems = JsonSerializer.Deserialize<List<Quiz>>(jsonString)!;      // Deserialiserar JSON till listan av dogs
+                }
+                catch (Exception ex)
+                {
+                    WriteLine($"Fel vid inläsning av json-fil, {ex.Message}");
+                }
             }
         }
 
         // Metod för att skapa ett nytt objekt av klasen Dog
-        public Dog AddDog(string question, string breed)
+        public Quiz AddToQuiz(string question, string breed)
         {
-            Dog obj = new Dog(question, breed);
+            Quiz obj = new Quiz(question, breed);
 
-            dogs.Add(obj);          // Lägg till i listan dogs
+            quizItems.Add(obj);          // Lägg till i listan dogs
             SaveToJsonFile();       // Spara till json-filen
             return obj;
         }
 
         // Metod för att rader en fråga
-        public int DeleteDog(int index)
+        public int DeleteQuiz(int index)
         {
-            dogs.RemoveAt(index);
+            quizItems.RemoveAt(index);
             SaveToJsonFile();        // Spara på nytt till json-filen
             return index;
         }
 
         // Metod för att hämta listan
-        public List<Dog> GetDogs()
+        public List<Quiz> GetQuiz()
         {
-            return dogs;
+            return quizItems;
         }
 
         // Metod för att spara frågor/svar med serialize
         public void SaveToJsonFile()
         {
-            var jsonString = JsonSerializer.Serialize(dogs);
-            File.WriteAllText(filePath, jsonString);
+            try
+            {
+                var jsonString = JsonSerializer.Serialize(quizItems);
+                File.WriteAllText(filePath, jsonString);
+            }
+            catch (Exception ex)
+            {
+                WriteLine($"Fel vid sparandet av json-filen: {ex.Message}");
+            }
         }
 
         // Metod för att skriva ut alla frågor 
         public void ShowQuiz()
         {
-            if (dogs.Count == 0)
+            if (quizItems.Count == 0)
             {
-                Console.WriteLine("Det finns inga frågor i quizet just nu.");
+                WriteLine("Det finns inga frågor i quizet just nu.");
             }
             else
             {
+                WriteLine("Quizfrågor:\n");
                 int i = 0;
-                foreach (Dog dog in GetDogs())
+                foreach (Quiz dog in GetQuiz())
                 {
-                    Console.WriteLine($"[{i++}] {dog.Question} - {dog.Breed}");
+
+                    WriteLine($"[{i++}] {dog.Question} - {dog.Breed}");
                 }
             }
         }
 
-        // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
-        public static void ErrorMessage()
-        {
-            Console.WriteLine("\nFelaktigt val, tryck på valfri tangent för att testa igen!");
-            Console.ReadKey();
-        }
+        // // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
+        // public static void ErrorMessage()
+        // {
+        //     WriteLine("\nFelaktigt val, tryck på valfri tangent för att testa igen!");
+        //     ReadKey();
+        // }
 
     }
 }

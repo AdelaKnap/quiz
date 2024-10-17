@@ -1,6 +1,4 @@
-/*
-
-*/
+/* DT071G Projektuppgift. En konsolapplikation där användaren kan spela ett quiz samt hantera quizets olika delar. Av Adela Knap */
 
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
 
@@ -14,25 +12,16 @@ namespace quiz
             OutputEncoding = System.Text.Encoding.Unicode;
             InputEncoding = System.Text.Encoding.Unicode;
 
-            // Skapa nytt objekt av QuizManager
+            // Skapa nytt objekt av MenuManager, QuizManager och GameManager
+            MenuManager menuManager = new();
             QuizManager quizManager = new();
-
-            // Skapa nytt objekt av GameManager
             GameManager gameManager = new();
 
             // While-loop för att fortsätta köra applikationen tills den avslutas
             while (true)
             {
-                Clear();  // Rensa konsolen
-
-                CursorVisible = false;  // Dölj markör
                 // Visa huvudmeny
-                WriteLine("H U N D - Q U I Z \n");
-                WriteLine("Välj vad du vill göra:");
-                WriteLine("1. Spela quiz");
-                WriteLine("2. Visa topplista");
-                WriteLine("3. Hantera quizet och topplistan");
-                WriteLine("X. Avsluta spelet");
+                menuManager.ShowMenu();
 
                 // Användarens val med ReadKey
                 ConsoleKeyInfo keyInfo = ReadKey(true);
@@ -43,13 +32,13 @@ namespace quiz
                 {
                     case '1':
                         Clear();
-                        var questions = quizManager.GetDogs();      // Hämta frågorna från quizManager
-                        gameManager.PlayQuiz(questions);            // Spela quizet med frågorna
+                        var questions = quizManager.GetQuiz();      // Hämta frågorna från quizManager
+                        gameManager.PlayQuiz(questions);            // Spela quizet med frågorna som parameter
                         break;
 
                     case '2':
                         Clear();
-                        gameManager.ShowTopList();
+                        gameManager.ShowTopList();    // Visa topplistan
                         WriteLine("\nTryck på valfri tangent för att återgå till menyn.");
                         ReadKey();
                         break;
@@ -57,24 +46,12 @@ namespace quiz
                     // Undermeny för att hantera quizet
                     case '3':
                         Clear();
-
-                        // Boolean för att hålla koll på när loopen för undermenyn ska brytas/återgå till huvudmeny
-                        bool toMainMenu = false;
+                        bool toMainMenu = false;   // Boolean för att hålla koll på när loopen för undermenyn ska brytas/återgå till huvudmeny
 
                         while (!toMainMenu)
                         {
-                            Clear();  // Rensa konsolen
+                            menuManager.ShowSubMenu();   // Visa undermenyn
 
-                            CursorVisible = false;  // Dölj markör
-                            WriteLine("Välj vad du vill göra:\n");
-                            WriteLine("1. Lägg till fråga");
-                            WriteLine("2. Ta bort fråga");
-                            WriteLine("3. Visa alla frågor");
-                            WriteLine("4. Radera topplistan");
-                            WriteLine("5. Visa topplistan\n");
-                            WriteLine("X. Återgå till huvudmenyn");
-
-                            // Användarens val för undermenyn
                             keyInfo = ReadKey(true);
                             char subChoice = keyInfo.KeyChar;
 
@@ -83,98 +60,39 @@ namespace quiz
                             {
                                 case '1':
                                     Clear();
-
-                                    string? inputQuestion;
-                                    string? inputBreed;
-
-                                    CursorVisible = true;  // Visa markör
-                                    Write("Skriv in en ny fråga: ");
-
-                                    // Kör så länge inte användaren anger en "riktig" fråga och inte null/whitespace
-                                    while (string.IsNullOrWhiteSpace(inputQuestion = ReadLine()))
-                                    {
-                                        Clear();
-                                        WriteLine("Du måste skriva in en fråga, försök igen!");
-                                        Write("Skriv in en fråga: ");
-                                    }
-
-                                    Write("Skriv in rätt ras på frågan: ");
-
-                                    // Kör så länge inte användaren anger ett "riktigt" svar
-                                    while (string.IsNullOrWhiteSpace(inputBreed = ReadLine()))
-                                    {
-                                        Clear();
-                                        WriteLine("Du måste ange ett svar, försök igen!");
-                                        Write("Skriv in rätt ras på frågan: ");
-                                    }
-
-                                    // Kör metoden AddDog och spara om allt stämmer
-                                    quizManager.AddDog(inputQuestion, inputBreed);
-
-                                    WriteLine("\nFrågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
+                                    quizManager.ShowQuiz();         // Skriv ut alla frågor som finns
+                                    WriteLine("\nTryck på valfri tangent för att återgå till undermenyn.");
                                     ReadKey();
                                     break;
 
                                 case '2':
                                     Clear();
-                                    // Skriv ut alla frågor som finns
-                                    quizManager.ShowQuiz();
 
-                                    // Kontroll om det finns några frågor i quizet
-                                    if (quizManager.GetDogs().Count == 0)
-                                    {
-                                        WriteLine("Inga frågor finns i quizet. Tryck på valfri tangent för att återgå till undermenyn...");
-                                        ReadKey();
-                                        break;
-                                    }
+                                    string? inputQuestion;
+                                    string? inputBreed;
 
-                                    // Fortsätt tills giltigt index anges
-                                    while (true)
-                                    {
-                                        Write("\nAnge index på frågan som ska tas bort: ");
+                                    menuManager.AddQuestion(out inputQuestion, out inputBreed);       // Lägga till ny fråga i quizet
+                                    quizManager.AddToQuiz(inputQuestion, inputBreed);                 // Kör metoden AddDog och spara om allt stämmer
 
-                                        // Konvertera till int samt kontrollera att index är rätt
-                                        if (int.TryParse(ReadLine(), out int index) && index >= 0 && index < quizManager.GetDogs().Count)
-                                        {
-                                            try
-                                            {
-                                                quizManager.DeleteDog(index);   // Radera fråga
-                                                WriteLine("Frågan har tagits bort! Tryck på valfri tangent för att återgå till undermenyn.");
-                                                ReadKey();
-                                                break;
-                                            }
-                                            catch (Exception)
-                                            {
-                                                WriteLine("Det blev något fel. Tryck på valfri tangent för att fortsätta.");
-                                                ReadKey();
-                                                break;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            QuizManager.ErrorMessage();
-                                        }
-                                    }
+                                    WriteLine("\nFrågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
+                                    ReadKey();
                                     break;
 
                                 case '3':
                                     Clear();
-                                    // Skriv ut alla frågor som finns
-                                    quizManager.ShowQuiz();
-                                    WriteLine("\nTryck på valfri tangent för att återgåt till undermenyn.");
-                                    ReadKey();
+                                    menuManager.DeleteQuestion(quizManager);         // Ta bort fråga, metod med objektet quizManager som parameter
                                     break;
 
                                 case '4':
                                     Clear();
-                                    gameManager.DeleteTopList();
+                                    gameManager.ShowTopList();          // Visa topplistan
+                                    WriteLine("\nTryck på valfri tangent för att återgå till undermenyn.");
+                                    ReadKey();
                                     break;
 
                                 case '5':
                                     Clear();
-                                    gameManager.ShowTopList();
-                                    WriteLine("\nTryck på valfri tangent för att återgå till undermenyn.");
-                                    ReadKey();
+                                    gameManager.DeleteTopList();        // Radera topplistan
                                     break;
 
                                 case 'x':
@@ -183,7 +101,7 @@ namespace quiz
                                     break;
 
                                 default:
-                                    QuizManager.ErrorMessage();
+                                    menuManager.ErrorMessage();     // Felmeddelande 
                                     break;
                             }
                         }
@@ -196,7 +114,7 @@ namespace quiz
                         break;
 
                     default:
-                        QuizManager.ErrorMessage();
+                        menuManager.ErrorMessage();
                         break;
                 }
             }
@@ -204,13 +122,7 @@ namespace quiz
     }
 }
 
-
 /*
-Att göra: 
-Lös probelmet med svaren och esc..
-Fixa att visaren inte syns förräns man ska skriva in något
-Fixa tidtagning?
-
 
 [0] Vilken hundras är känd för att vara en bra ledarhund för blinda? - Labrador
 [1] Vilken hundras är den minsta i världen? - Chihuahua
@@ -225,3 +137,4 @@ Fixa tidtagning?
 [10] Vilken hundras, som är en av världens äldsta, har en lockig, ulliknande päls och sitt ursprung i Ungern? - Puli
 
 */
+

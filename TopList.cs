@@ -9,12 +9,15 @@ namespace quiz
 
         public int MaxPoints { get; set; }
 
+        public double Time { get; set; }   
+
         // Konstruktor
-        public TopList(string playerName, int points, int maxPoints)
+        public TopList(string playerName, int points, int maxPoints, double time)
         {
             PlayerName = playerName;
             Points = points;
             MaxPoints = maxPoints;
+            Time = time;
         }
     }
 }

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
+using System.Diagnostics;  // För att använda Stopwatch
 
+/* Här stopp*/
 namespace quiz
 {
     public class GameManager
@@ -13,16 +15,23 @@ namespace quiz
         {
             if (File.Exists(fileName)) // Kontroll om json-fil finns
             {
-                // Läs in text från filen
-                string jsonString = File.ReadAllText(fileName);
-                topList = JsonSerializer.Deserialize<List<TopList>>(jsonString)!; // Deserialiserar JSON till listan
+                try
+                {
+                    // Läs in text från filen
+                    string jsonString = File.ReadAllText(fileName);                      // Läs in text från filen
+                    topList = JsonSerializer.Deserialize<List<TopList>>(jsonString)!;    // Deserialiserar JSON till listan
+                }
+                catch (Exception ex)
+                {
+                    WriteLine($"Fel vid inläsning av json-fil, {ex.Message}");
+                }
             }
         }
 
         // Metod för att skapa ett nytt objekt av klassen TopList
-        public TopList AddTopList(string name, int points, int maxPoints)
+        public TopList AddTopList(string name, int points, int maxPoints, double time)
         {
-            TopList obj = new TopList(name, points, maxPoints);     // Användning av konstruktorn
+            TopList obj = new TopList(name, points, maxPoints, time);     // Användning av konstruktorn
             topList.Add(obj);
             SaveToFile();
             return obj;
@@ -34,11 +43,18 @@ namespace quiz
             return topList;
         }
 
-        // Metod för att spara med serialize
+        // Metod för att spara topplistan med serialize
         public void SaveToFile()
         {
-            var jsonString = JsonSerializer.Serialize(topList);
-            File.WriteAllText(fileName, jsonString);
+            try
+            {
+                var jsonString = JsonSerializer.Serialize(topList);
+                File.WriteAllText(fileName, jsonString);
+            }
+            catch (Exception ex)
+            {
+                WriteLine($"Fel vid sparandet av json-filen: {ex.Message}");
+            }
         }
 
         // Metod för att skriva ut topplistan
@@ -52,15 +68,19 @@ namespace quiz
             {
                 WriteLine("T O P P L I S T A N\n");
 
+                // Sortera topplistan efter poäng och sedan efter tid om poängen är lika
+                var sortedTopList = topList
+                    .OrderByDescending(t => t.Points)  // Sortera efter poäng
+                    .ThenBy(t => t.Time);              // Sortera efter tid
+
                 int i = 1;
-                // Sortera topplistan efter poäng i fallande ordning
-                var sortedTopList = topList.OrderByDescending(t => t.Points);
                 foreach (TopList score in sortedTopList)
                 {
-                    WriteLine($"{i++}. {score.PlayerName} - {score.Points} rätt av {score.MaxPoints}");
+                    WriteLine($"{i++}. {score.PlayerName} - {score.Points} rätt av {score.MaxPoints} (tid: {Math.Round(score.Time)} sek)");
                 }
             }
         }
+
 
         // Metod för att rensa hela topplistan
         public void DeleteTopList()
@@ -89,91 +109,143 @@ namespace quiz
             ReadKey();
         }
 
-        // Metod för att spela quizet med listan Dog som parameter
-        public void PlayQuiz(List<Dog> questions)
+        // Metod för att spela quizet med listan av frågor
+        public void PlayQuiz(List<Quiz> questions)
         {
-            string? name;
-
-            Write("Skriv in ditt namn: ");
-
-            while (string.IsNullOrWhiteSpace(name = ReadLine()))        // Kontroll om null/whitespace
+            if (questions == null || questions.Count == 0)
             {
-                Clear();
-                WriteLine("Du måste skriva in ett giltigt namn!");
-                Write("Skriv in ditt namn: ");
-            }
-
-            Clear();
-            WriteLine($"Hej {name} och välkommen till hundquizet!\n");
-            WriteLine("Tryck på valfri tangent för att böra quiza!");
-            WriteLine("(Tryck 'Esc' om du vill avbryta spelet under quizets gång.)");
-            ReadKey();
-
-
-            int score = 0;                        // För att räkna poäng
-            int questionNumber = 1;               // Numrera frågorna
-            bool quizCancelled = false;           // Boolean för att hålla koll på om spelaren vill avbryta quizet
-
-            // Loopa genom alla frågor
-            foreach (var question in questions)
-            {
-                Clear();
-                WriteLine($"Fråga {questionNumber} av {questions.Count}");              // Skriv ut vilken fråga det är
-                WriteLine(question.Question);                                           // Skriv ut frågan
-                Write("\nSvar: ");
-
-                // Kontrollera om Esc trycktes för att svalsuta spelet utan att spara
-                var keyInfo = ReadKey(intercept: true);
-
-                if (keyInfo.Key == ConsoleKey.Escape)
-                {
-                    quizCancelled = true;
-                    break;
-                }
-                // Det inskrivna svaret
-                string? answer = ReadLine();
-
-                while (string.IsNullOrWhiteSpace(answer))     // Kontroll null/whitespace
-                {
-                    WriteLine("\nDu måste skriva in ett giltigt svar!");
-                    Write("Svar: ");
-                    answer = ReadLine();
-                }
-
-                // Kontrollera svaret med String.Equals, oavsett stora/små bokstäver
-                if (string.Equals(answer, question.Breed, StringComparison.OrdinalIgnoreCase))
-                {
-                    WriteLine("\nRätt svar!");
-                    score++;                        // Lägg till poäng
-                }
-                else
-                {
-                    WriteLine($"\nTyvärr är det fel svar. Rätt svar är: {question.Breed}.");
-                }
-
-                WriteLine("Tryck på valfri tangent för att fortsätta...");
-                ReadKey();
-
-                questionNumber++;  // Öka frågenumret efter varje fråga
-            }
-
-            Clear();
-
-            // Om quizet avbryts
-            if (quizCancelled)
-            {
-                WriteLine("Quizet avbröts, ditt resultat sparas inte. Tryck på valfri tangent för att återgå till menyn.");
-                ReadKey();
+                WriteLine("Det finns inga frågor i quizet just nu.");
             }
             else
             {
-                WriteLine($"Quizet är slut! Du fick {score} poäng av totalt {questions.Count} möjliga.\n");
-                WriteLine("Tryck på valfri tangent för att återgå till meny.");
+                string? name;
+                CursorVisible = true;
+                Write("Skriv in ditt namn: ");
+
+                while (string.IsNullOrWhiteSpace(name = ReadLine()))        // Kontroll om null/whitespace
+                {
+                    Clear();
+                    WriteLine("Du måste skriva in ett giltigt namn!");
+                    Write("Skriv in ditt namn: ");
+                }
+
+                Clear();
+                CursorVisible = false;
+                WriteLine($"Hej {name} och välkommen till quizet!\n");
+                WriteLine("Tryck på valfri tangent för att börja quiza!");
+                WriteLine("(Svara 'x' om du vill avbryta quizet.)");
                 ReadKey();
 
-                // Lägger till namn och poäng på topplistan
-                AddTopList(name, score, questions.Count);
+                int score = 0;                        // För att räkna poäng
+                int questionNumber = 1;               // Numrera frågorna
+                bool quizCancelled = false;           // Hålla koll på om spelaren vill avbryta quizet
+
+                // Starta tidtagning
+                Stopwatch timer = new();
+                timer.Start();
+
+                // Loopa genom alla frågor
+                foreach (var question in questions)
+                {
+                    Clear();
+                    CursorVisible = true;
+                    WriteLine($"Fråga {questionNumber} av {questions.Count}");    // Skriv ut frågenumret
+                    WriteLine(question.Question);                                 // Skriv ut frågan
+                    Write("\nSvar: ");
+                    string? answer = ReadLine();
+
+                    // Kontrollera om spelaren vill avbryta quizet
+                    if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        quizCancelled = true;
+                        break;
+                    }
+
+                    // Kontroll null/whitespace och visa frågan igen tills giltigt svar eller avbryt
+                    while (string.IsNullOrWhiteSpace(answer) || answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            quizCancelled = true;
+                            break;
+                        }
+
+                        Clear();
+                        WriteLine("Du måste skriva in ett giltigt svar! Eller tryck 'x' för att avbryta quizet.\n");
+                        WriteLine($"Fråga {questionNumber} av {questions.Count}");
+                        WriteLine(question.Question);
+                        Write("\nSvar: ");
+                        answer = ReadLine();
+                    }
+
+                    // Om quizet avbryts, gå ur loopen
+                    if (quizCancelled)
+                    {
+                        break;
+                    }
+
+                    // Kontrollera om svaret är rätt
+                    if (string.Equals(answer.Trim(), question.Breed, StringComparison.OrdinalIgnoreCase))
+                    {
+                        WriteLine("\nRätt svar!");
+                        score++;  // Lägg till poäng
+                    }
+                    else
+                    {
+                        WriteLine($"\nTyvärr är det fel svar. Rätt svar är: {question.Breed}.");
+                    }
+
+                    CursorVisible = false;
+                    WriteLine("Tryck på valfri tangent för att fortsätta...");
+                    ReadKey();
+
+                    questionNumber++;  // Öka frågenumret efter varje fråga
+                }
+
+                timer.Stop();  // Stoppa tidtagningen
+                double playerTime = timer.Elapsed.TotalSeconds;  // Tiden i sekunder
+                Clear();
+                CursorVisible = false;
+
+                // Om quizet avbryts
+                if (quizCancelled)
+                {
+                    WriteLine("Quizet avbröts, ditt resultat sparas inte. Tryck på valfri tangent för att återgå till menyn.");
+                    ReadKey();
+                }
+                else
+                {
+                    WriteLine($"Quizet är slut! Du fick {score} poäng av totalt {questions.Count} möjliga, tid: {Math.Round(playerTime)} sekunder.\n");
+                    WriteLine("Tryck på valfri tangent för att återgå till menyn.");
+                    ReadKey();
+
+                    // Lägger till namn och poäng på topplistan
+                    AddTopList(name, score, questions.Count, playerTime);
+                }
             }
+        }
+
+        public string? GetAnswer(int questionNumber, int totalQuestions, string question)
+        {
+            string? answer = null;
+
+            // Kör loopen medan svaret är null eller whitespace och inte är "X"
+            while (string.IsNullOrWhiteSpace(answer) || answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Clear();
+                WriteLine($"Fråga {questionNumber} av {totalQuestions}");
+                WriteLine(question);
+                Write("\nSvar: ");
+                answer = ReadLine();
+
+                // Kontrollera om spelaren vill avbryta quizet
+                if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return "X";
+                }
+            }
+
+            return answer;
         }
 
     }
