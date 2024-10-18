@@ -1,3 +1,5 @@
+// Klasser och metoder för att hantera menyn som visas i program.cs
+
 using static System.Console;
 
 namespace quiz
@@ -56,6 +58,7 @@ namespace quiz
             }
         }
 
+        // Ta bort en fråga från quizet, objektet quizManager skickas med
         public void DeleteQuestion(QuizManager quizManager)
         {
             Clear();
@@ -81,7 +84,7 @@ namespace quiz
                     try
                     {
                         quizManager.DeleteQuiz(index); // Radera fråga
-                        WriteLine("\nFrågan har tagits bort! Tryck på valfri tangent för att återgå till undermenyn.");
+                        WriteLine($"\nFråga {index} har tagits bort! Tryck på valfri tangent för att återgå till undermenyn.");
                         ReadKey();
                         break; // Bryt när frågan har tagits bort
                     }
@@ -89,7 +92,7 @@ namespace quiz
                     {
                         WriteLine("Det blev något fel vid borttagning av frågan. Tryck på valfri tangent för att fortsätta.");
                         ReadKey();
-                        break; 
+                        break;
                     }
                 }
                 else

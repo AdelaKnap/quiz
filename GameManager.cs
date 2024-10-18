@@ -1,4 +1,6 @@
-using System.Text.Json;
+// Klasser och metoder för att hantera spelets gång 
+
+using System.Text.Json;       // För att serialisering och deserialisering till/från JSON-fil.
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
 using System.Diagnostics;  // För att använda Stopwatch
 
@@ -7,7 +9,7 @@ namespace quiz
 {
     public class GameManager
     {
-        private string fileName = @"topplist.json"; // Filväg till json-fil där topplistan lagras
+        private string fileName = @"toplist.json"; // Filväg till json-fil där topplistan lagras
         private List<TopList> topList = new();      // Lista för poängen
 
         // Konstruktor
@@ -32,12 +34,12 @@ namespace quiz
         public TopList AddTopList(string name, int points, int maxPoints, double time)
         {
             TopList obj = new TopList(name, points, maxPoints, time);     // Användning av konstruktorn
-            topList.Add(obj);
-            SaveToFile();
+            topList.Add(obj);             // Lägg till objekt i listan
+            SaveToFile();                 // Spara till json-fil
             return obj;
         }
 
-        // Metod för att hämta listan
+        // Metod för att hämta listan publikt
         public List<TopList> GetTopList()
         {
             return topList;
@@ -60,21 +62,22 @@ namespace quiz
         // Metod för att skriva ut topplistan
         public void ShowTopList()
         {
-            if (topList.Count == 0)
+            if (topList.Count == 0)        // Kontroll så att den inte är tom
             {
                 WriteLine("Det finns inga resultat i topplistan just nu.");
             }
             else
             {
-                WriteLine("T O P P L I S T A N\n");
+                WriteLine("T O P P  - T I O\n");
 
-                // Sortera topplistan efter poäng och sedan efter tid om poängen är lika
+                // Sortera topplistan efter poäng och sedan efter tid om poängen är lika med LINQ
                 var sortedTopList = topList
-                    .OrderByDescending(t => t.Points)  // Sortera efter poäng
-                    .ThenBy(t => t.Time);              // Sortera efter tid
+                    .OrderByDescending(t => t.Points)       // Sortera efter poäng i fallande ordning
+                    .ThenByDescending(t => t.Time)          // Sortera efter tid i fallande ordning
+                    .Take(10);                              // Visa endast de 10 bästa 
 
                 int i = 1;
-                foreach (TopList score in sortedTopList)
+                foreach (TopList score in sortedTopList)     // Loopa genom topplistan och skriv ut
                 {
                     WriteLine($"{i++}. {score.PlayerName} - {score.Points} rätt av {score.MaxPoints} (tid: {Math.Round(score.Time)} sek)");
                 }
@@ -89,13 +92,13 @@ namespace quiz
 
             var keyInfo = ReadKey(intercept: true);  // Läs in tangent utan att visa den
 
-            if (keyInfo.Key == ConsoleKey.Y)         // Om 'Y' trycks
+            if (keyInfo.Key == ConsoleKey.Y)         // Om tangent 'y' trycks
             {
                 topList.Clear();                     // Radera listan
                 SaveToFile();                        // Spara raderingen
                 WriteLine("\nTopplistan har raderats.");
             }
-            else if (keyInfo.Key == ConsoleKey.N)    // Om 'N' trycks
+            else if (keyInfo.Key == ConsoleKey.N)    // Om tangent 'n' trycks
             {
                 WriteLine("\nInga ändringar gjordes.");
             }
@@ -109,10 +112,10 @@ namespace quiz
             ReadKey();
         }
 
-        // Metod för att spela quizet med listan av frågor
+        // Metod för att spela quizet med listan av frågor som parameter
         public void PlayQuiz(List<Quiz> questions)
         {
-            if (questions == null || questions.Count == 0)
+            if (questions == null || questions.Count == 0)      // Kontroll om listan är null/inga frågor
             {
                 WriteLine("Det finns inga frågor i quizet just nu.");
             }
@@ -137,12 +140,11 @@ namespace quiz
                 ReadKey();
 
                 int score = 0;                        // För att räkna poäng
-                int questionNumber = 1;               // Numrera frågorna
+                int questionNumber = 1;               // Numrera frågorna, start på 1
                 bool quizCancelled = false;           // Hålla koll på om spelaren vill avbryta quizet
 
-                // Starta tidtagning
-                Stopwatch timer = new();
-                timer.Start();
+                Stopwatch timer = new();              
+                timer.Start();                         // Starta tidtagning
 
                 // Loopa genom alla frågor
                 foreach (var question in questions)
@@ -154,7 +156,7 @@ namespace quiz
                     Write("\nSvar: ");
                     string? answer = ReadLine();
 
-                    // Kontrollera om spelaren vill avbryta quizet
+                    // Kontroll om spelaren vill avbryta quizet
                     if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
                     {
                         quizCancelled = true;
@@ -188,7 +190,7 @@ namespace quiz
                     if (string.Equals(answer.Trim(), question.Breed, StringComparison.OrdinalIgnoreCase))
                     {
                         WriteLine("\nRätt svar!");
-                        score++;  // Lägg till poäng
+                        score++;                        // Lägg till poäng
                     }
                     else
                     {
@@ -202,7 +204,7 @@ namespace quiz
                     questionNumber++;  // Öka frågenumret efter varje fråga
                 }
 
-                timer.Stop();  // Stoppa tidtagningen
+                timer.Stop();                                    // Stoppa tidtagningen
                 double playerTime = timer.Elapsed.TotalSeconds;  // Tiden i sekunder
                 Clear();
                 CursorVisible = false;
@@ -224,29 +226,5 @@ namespace quiz
                 }
             }
         }
-
-        public string? GetAnswer(int questionNumber, int totalQuestions, string question)
-        {
-            string? answer = null;
-
-            // Kör loopen medan svaret är null eller whitespace och inte är "X"
-            while (string.IsNullOrWhiteSpace(answer) || answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
-            {
-                Clear();
-                WriteLine($"Fråga {questionNumber} av {totalQuestions}");
-                WriteLine(question);
-                Write("\nSvar: ");
-                answer = ReadLine();
-
-                // Kontrollera om spelaren vill avbryta quizet
-                if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return "X";
-                }
-            }
-
-            return answer;
-        }
-
     }
 }

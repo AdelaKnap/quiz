@@ -72,7 +72,7 @@ namespace quiz
                                     string? inputBreed;
 
                                     menuManager.AddQuestion(out inputQuestion, out inputBreed);       // Lägga till ny fråga i quizet
-                                    quizManager.AddToQuiz(inputQuestion, inputBreed);                 // Kör metoden AddDog och spara om allt stämmer
+                                    quizManager.AddToQuiz(inputQuestion, inputBreed);                 // Kör metoden AddToQuiz och spara om allt stämmer
 
                                     WriteLine("\nFrågan har lagts till! Tryck på valfri tangent för att återgå till undermenyn...");
                                     ReadKey();

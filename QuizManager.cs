@@ -1,7 +1,7 @@
 // Klasser och metoder för att hantera quizet
 
 using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
-using System.Text.Json;
+using System.Text.Json;       // För att serialisering och deserialisering till/från JSON-fil.
 
 namespace quiz
 {
@@ -20,7 +20,7 @@ namespace quiz
                 try
                 {
                     string jsonString = File.ReadAllText(filePath);                       // Läs in text från filen
-                    quizItems = JsonSerializer.Deserialize<List<Quiz>>(jsonString)!;      // Deserialiserar JSON till listan av dogs
+                    quizItems = JsonSerializer.Deserialize<List<Quiz>>(jsonString)!;      // Deserialiserar json till listan av quizItems
                 }
                 catch (Exception ex)
                 {
@@ -34,7 +34,7 @@ namespace quiz
         {
             Quiz obj = new Quiz(question, breed);
 
-            quizItems.Add(obj);          // Lägg till i listan dogs
+            quizItems.Add(obj);          // Lägg till i listan quizItems
             SaveToJsonFile();       // Spara till json-filen
             return obj;
         }
@@ -85,13 +85,5 @@ namespace quiz
                 }
             }
         }
-
-        // // Metod för att skriva ut felmeddelande, för att slippa upprepning av detta in program.cs
-        // public static void ErrorMessage()
-        // {
-        //     WriteLine("\nFelaktigt val, tryck på valfri tangent för att testa igen!");
-        //     ReadKey();
-        // }
-
     }
 }
