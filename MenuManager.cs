@@ -67,7 +67,7 @@ namespace quiz
             // Kontroll om det finns några frågor i quizet
             if (quizManager.GetQuiz().Count == 0)
             {
-                WriteLine("Inga frågor finns i quizet. Tryck på valfri tangent för att återgå till undermenyn...");
+                WriteLine("Inga frågor finns i quizet. Tryck på valfri tangent för att återgå till undermenyn.");
                 ReadKey();
                 return; // Avsluta om det inte finns några frågor
             }

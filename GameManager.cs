@@ -143,7 +143,7 @@ namespace quiz
                 int questionNumber = 1;               // Numrera frågorna, start på 1
                 bool quizCancelled = false;           // Hålla koll på om spelaren vill avbryta quizet
 
-                Stopwatch timer = new();              
+                Stopwatch timer = new();
                 timer.Start();                         // Starta tidtagning
 
                 // Loopa genom alla frågor
@@ -157,16 +157,16 @@ namespace quiz
                     string? answer = ReadLine();
 
                     // Kontroll om spelaren vill avbryta quizet
-                    if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                    if (answer != null && answer.Trim().Equals("X", StringComparison.OrdinalIgnoreCase))
                     {
                         quizCancelled = true;
                         break;
                     }
 
                     // Kontroll null/whitespace och visa frågan igen tills giltigt svar eller avbryt
-                    while (string.IsNullOrWhiteSpace(answer) || answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                    while (string.IsNullOrWhiteSpace(answer) || answer.Trim().Equals("X", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (answer != null && answer.Trim().Equals("X", StringComparison.CurrentCultureIgnoreCase))
+                        if (answer != null && answer.Trim().Equals("X", StringComparison.OrdinalIgnoreCase))
                         {
                             quizCancelled = true;
                             break;
@@ -180,7 +180,7 @@ namespace quiz
                         answer = ReadLine();
                     }
 
-                    // Om quizet avbryts, gå ur loopen
+                    // Om quizet avbryts, stoppa loopen
                     if (quizCancelled)
                     {
                         break;
