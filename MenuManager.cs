@@ -16,7 +16,7 @@ namespace quiz
             WriteLine("1. Spela quiz");
             WriteLine("2. Visa topplista");
             WriteLine("3. Admin: Hantera quizet och topplistan\n");
-            WriteLine("X. Avsluta spelet");
+            WriteLine("X. Avsluta quizet");
         }
 
         // Metod för att skriva ut undermenyn
@@ -24,6 +24,7 @@ namespace quiz
         {
             Clear();
             CursorVisible = false;
+            WriteLine("A D M I N I S T R A T I O N \n");
             WriteLine("Välj vad du vill göra:\n");
             WriteLine("1. Visa alla frågor");
             WriteLine("2. Lägg till fråga");

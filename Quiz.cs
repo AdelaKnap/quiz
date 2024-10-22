@@ -1,4 +1,4 @@
-// Klass för Dog med frågan och svaret
+// Klass för Quiz med frågan och svaret
 
 namespace quiz
 {

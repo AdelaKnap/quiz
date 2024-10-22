@@ -1,10 +1,9 @@
 // Klasser och metoder för att hantera spelets gång 
 
-using System.Text.Json;       // För att serialisering och deserialisering till/från JSON-fil.
-using static System.Console;  // För att slippa skriva Console framför Write/WriteLine
-using System.Diagnostics;  // För att använda Stopwatch
+using System.Text.Json;         // För att serialisering och deserialisering till/från JSON-fil.
+using static System.Console;    // För att slippa skriva Console framför Write/WriteLine
+using System.Diagnostics;       // För att använda Stopwatch
 
-/* Här stopp*/
 namespace quiz
 {
     public class GameManager
@@ -62,6 +61,8 @@ namespace quiz
         // Metod för att skriva ut topplistan
         public void ShowTopList()
         {
+            var topList = GetTopList();     // Hämta listan
+
             if (topList.Count == 0)        // Kontroll så att den inte är tom
             {
                 WriteLine("Det finns inga resultat i topplistan just nu.");
@@ -73,13 +74,13 @@ namespace quiz
                 // Sortera topplistan efter poäng och sedan efter tid om poängen är lika med LINQ
                 var sortedTopList = topList
                     .OrderByDescending(t => t.Points)       // Sortera efter poäng i fallande ordning
-                    .ThenByDescending(t => t.Time)          // Sortera efter tid i fallande ordning
+                    .ThenBy(t => t.Time)                    // Sortera efter tid i fallande ordning
                     .Take(10);                              // Visa endast de 10 bästa 
 
                 int i = 1;
                 foreach (TopList score in sortedTopList)     // Loopa genom topplistan och skriv ut
                 {
-                    WriteLine($"{i++}. {score.PlayerName} - {score.Points} rätt av {score.MaxPoints} (tid: {Math.Round(score.Time)} sek)");
+                    WriteLine($"{i++}. {score.PlayerName} - {score.Points} av {score.MaxPoints} rätt (tid: {Math.Round(score.Time)} sek)");
                 }
             }
         }
