@@ -137,7 +137,7 @@ namespace quiz
                 CursorVisible = false;
                 WriteLine($"Hej {name} och välkommen till quizet!\n");
                 WriteLine("Tryck på valfri tangent för att börja quiza!");
-                WriteLine("(Svara 'x' om du vill avbryta quizet.)");
+                WriteLine("(Svara 'x' om du vill avbryta quizet under spelets gång.)");
                 ReadKey();
 
                 int score = 0;                        // För att räkna poäng
