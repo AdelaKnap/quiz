@@ -69,7 +69,7 @@ namespace quiz
             }
             else
             {
-                WriteLine("T O P P  - T I O\n");
+                WriteLine("T O P P L I S T A\n");
 
                 // Sortera topplistan efter poäng och sedan efter tid om poängen är lika med LINQ
                 var sortedTopList = topList
