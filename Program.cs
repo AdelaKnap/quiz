@@ -122,19 +122,3 @@ namespace quiz
     }
 }
 
-/*
-
-[0] Vilken hundras är känd för att vara en bra ledarhund för blinda? - Labrador
-[1] Vilken hundras är den minsta i världen? - Chihuahua
-[2] Vilken hundras har sitt ursprung i Sibirien och är känd för sin uthållighet i slädhundstävlingar? - Siberian husky
-[3] Vilken hundras är känd för sin blå-svarta tunga? - Chow chow
-[4] Vilken hundras är känd för sitt utseende med veckad hud och rynkor? - Shar pei
-[5] Vilken hundras användes ursprungligen för att jaga uttrar och är känd för sitt vattenavstötande päls? - Irländsk vattenspaniel
-[6] Vilken hundras är känd för sin snabba hastighet och användes traditionellt för jakt på harar? - Greyhound
-[7] Vilken liten terrier är känd för sin modiga personlighet och har sitt ursprung i Skottland? - Skotsk terrier
-[8] Vilken hundras, med sitt ursprung i Kina, är känd för sin "lejonlika" päls och sitt platta ansikte? - Pekinges
-[9] Vilken hundras är känd för sin snabbhet och intelligens och används ofta i agility-tävlingar? - Border collie
-[10] Vilken hundras, som är en av världens äldsta, har en lockig, ulliknande päls och sitt ursprung i Ungern? - Puli
-
-*/
-
