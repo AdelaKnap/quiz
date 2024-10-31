@@ -7,5 +7,8 @@ Under spelet visas en fråga åt gången, där spelaren svarar och får feedback
 ## Administration av spelet
 I en undermeny visas administrationsverktyg som hanterar quizet. Där går det att få en översyn över alla fråogr, lägga till en ny fråga, ta bort en fråga, visa topplistan samt radera topplistan.
 
+## Länk till video-presentation
+https://youtu.be/qhhST37AAZk
+
 ### Skapad av
 Adela Knap adkn2300@student.miun.se 
